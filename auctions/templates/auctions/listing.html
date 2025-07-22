@@ -1,0 +1,120 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Listing: {{ listing.title }}</h2>
+
+    {% if listing.image %}
+        <img src="{{ listing.image }}" width="300">
+    {% endif %}
+
+    <p><strong>Price:</strong> ${{ listing.price }}</p>
+    <p><strong>Description:</strong> {{ listing.description }}</p>
+    <p><strong>Category:</strong> {{ listing.category }}</p>
+    <p><strong>Listed by:</strong> {{ listing.owner.username }}</p>
+    <p><strong>Created at:</strong> {{ listing.dateTime|date:"F j, Y, g:i a" }}</p>
+
+    <hr>
+    {% if count > 1 %}
+        <p><strong>Current Highest Bid:</strong> ${{ highestBid }}</p>
+        {% if isHighest %}
+        <p>{{ count }} bids so far. Your bid is the highest bid. </p>
+        {% else %}
+        {% endif %}
+    {% else %}
+        <p>{{ count }} bid so far.</p>
+    {% endif %}
+    <hr>
+
+    {% if user.is_authenticated %}
+
+
+        {% if listing in user.watchlist.all %}
+
+            <form action="{% url 'remove_watchlist' listing.id %}" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-warning">Remove from Watchlist</button>
+            </form>
+
+        {% else %}
+            <form action="{% url 'add_watchlist' listing.id %}" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-success">Add to Watchlist</button>
+            </form>
+
+        {% endif %}
+
+        {% if user == listing.owner and not listing.closed %}
+        <form method="POST" action="{% url 'close_auction' listing.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Close Auction</button>
+        </form>
+        {% endif %}
+
+        {% if listing.closed %}
+            <div class="alert alert-warning mt-3">
+                This auction is closed.
+                {% if listing.winner %}
+
+                        {% if listing.winner.id == user.id %}
+                            <br><strong>You have won this bid!</strong>
+
+                        {% else %}
+                            <br><strong>Winner:</strong> {{ listing.winner.username }}
+
+                        {% endif %}
+
+                {% else %}
+                    <br><strong>No bids were placed.</strong>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <h4>Place a Bid</h4>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <label for="amount">Your Bid:</label>
+                <input type="number" name="amount" step="0.01" min="0" required placeholder="Enter your bid"><br><br>
+                <button type="submit" class="btn btn-primary">Submit Bid</button>
+            </form>
+
+            <br>
+
+            <form method="POST">
+                {% csrf_token %}
+                <textarea name="comment" placeholder="Add a comment..." required></textarea><br>
+                <button type="submit" class="btn btn-secondary">Post Comment</button>
+            </form>
+
+        {% endif %}
+        
+        <hr>
+        {% if comments %}
+            <h4>Comments:</h4>
+            {% for comment in comments %}
+                <div style="margin-bottom: 15px;">
+                    {{ comment.content }}
+                    <br>
+                    <strong> -{{ comment.user.username }}</strong> on {{ comment.timestamp|date:"H:i, M d" }}<br>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No comments yet.</p>
+        {% endif %}
+
+    {% else %}
+        <p><a href="{% url 'login' %}">Log in</a> to place a bid.</p>
+    {% endif %}
+
+    <hr>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock %}

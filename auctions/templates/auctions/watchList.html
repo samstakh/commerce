@@ -1,0 +1,39 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>Watchlist</h2>
+    {% if listings %}
+        <hr style="border-top: 1px solid #ccc;">
+        <ul style="list-style: none; padding-left: 0;">
+            {% for listing in listings %}
+            <a href="{% url 'listing_detail' listing.id %}" style="text-decoration: none; color: inherit;">
+                <li style="display: flex; align-items: flex-start; margin-bottom: 20px;">
+                    <!-- Image section (left) -->
+                    <div style="margin-right: 20px;">
+                        {% if listing.image %}
+                            <img src="{{ listing.image }}" width="150">
+                        {% else %}
+                            <p>No Image</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Details section (right) -->
+                    <div>
+                        <h4> {{ listing.title }} </h4><br>
+                        <strong>Category: </strong>{{ listing.category }}<br>
+                        <strong>Price:</strong> ${{ listing.price }} <br>
+                        {{ listing.description }} <br>
+                        <strong>Owner:</strong> {{ listing.owner.username }} <br>
+                        <br> <small style="color: gray;">Created {{ listing.dateTime }}</small><br>
+                    </div>
+                </li>
+            </a>
+            <!-- 🔹 Line break between listings -->
+            <hr style="border-top: 1px solid #ccc;">
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>No listings available</p>
+    {% endif %}
+{% endblock %}

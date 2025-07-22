@@ -1,0 +1,35 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Listings in "{{ category|title }}"</h2>
+    <hr>
+
+    {% if listings %}
+        <ul style="list-style: none; padding-left: 0;">
+            {% for listing in listings %}
+                <li style="display: flex; align-items: flex-start; margin-bottom: 20px;">
+                    <!-- Image -->
+                    <div style="margin-right: 20px;">
+                        {% if listing.image %}
+                            <img src="{{ listing.image }}" width="150">
+                        {% else %}
+                            <p>No Image</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Info -->
+                    <div>
+                        <h4><a href="{% url 'listing_detail' listing.id %}">{{ listing.title }}</a></h4>
+                        <p><strong>Price:</strong> ${{ listing.price }}</p>
+                        <p>{{ listing.description }}</p>
+                        <p><strong>Owner:</strong> {{ listing.owner.username }}</p>
+                        <small style="color: gray;">Created {{ listing.dateTime }}</small>
+                    </div>
+                </li>
+                <hr>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No active listings in this category.</p>
+    {% endif %}
+{% endblock %}
