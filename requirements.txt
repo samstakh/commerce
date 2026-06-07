@@ -2,4 +2,5 @@ Django==5.2.1
 gunicorn
 requests
 pytz
-sqlparsewhitenoise
+sqlparse
+whitenoise
