@@ -1,39 +1,36 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    <div class="page-header">
+        <h1 class="page-heading page-heading--lg">Your <em>Watchlist</em></h1>
+        <p class="page-subtitle">Items you're keeping an eye on.</p>
+    </div>
 
-    <h2>Watchlist</h2>
     {% if listings %}
-        <hr style="border-top: 1px solid #ccc;">
-        <ul style="list-style: none; padding-left: 0;">
+        <div class="listings-grid">
             {% for listing in listings %}
-            <a href="{% url 'listing_detail' listing.id %}" style="text-decoration: none; color: inherit;">
-                <li style="display: flex; align-items: flex-start; margin-bottom: 20px;">
-                    <!-- Image section (left) -->
-                    <div style="margin-right: 20px;">
+                <a href="{% url 'listing_detail' listing.id %}" class="listing-card{% if listing.closed %} listing-card--closed{% endif %}">
+                    <div class="listing-card__img-wrap">
                         {% if listing.image %}
-                            <img src="{{ listing.image }}" width="150">
+                            <img class="listing-card__img" src="{{ listing.image }}" alt="{{ listing.title }}">
                         {% else %}
-                            <p>No Image</p>
+                            <div class="listing-card__no-img">No Image</div>
                         {% endif %}
+                        {% if listing.closed %}<span class="listing-card__badge">Closed</span>{% endif %}
                     </div>
-
-                    <!-- Details section (right) -->
-                    <div>
-                        <h4> {{ listing.title }} </h4><br>
-                        <strong>Category: </strong>{{ listing.category }}<br>
-                        <strong>Price:</strong> ${{ listing.price }} <br>
-                        {{ listing.description }} <br>
-                        <strong>Owner:</strong> {{ listing.owner.username }} <br>
-                        <br> <small style="color: gray;">Created {{ listing.dateTime }}</small><br>
+                    <div class="listing-card__body">
+                        <div class="listing-card__cat">{{ listing.category }}</div>
+                        <h3 class="listing-card__title">{{ listing.title }}</h3>
+                        <p class="listing-card__desc">{{ listing.description }}</p>
+                        <div class="listing-card__foot">
+                            <span class="listing-card__price">${{ listing.price }}</span>
+                            <span class="listing-card__meta">{{ listing.owner.username }}<br>{{ listing.dateTime|date:"M j, Y" }}</span>
+                        </div>
                     </div>
-                </li>
-            </a>
-            <!-- 🔹 Line break between listings -->
-            <hr style="border-top: 1px solid #ccc;">
+                </a>
             {% endfor %}
-        </ul>
-        {% else %}
-            <p>No listings available</p>
+        </div>
+    {% else %}
+        <div class="empty"><p>Your watchlist is empty.</p></div>
     {% endif %}
 {% endblock %}

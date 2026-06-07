@@ -1,13 +1,14 @@
-<!-- auctions/templates/auctions/category.html -->
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Categories</h2>
+    <div class="page-header">
+        <h1 class="page-heading page-heading--lg">Browse by <em>Category</em></h1>
+        <p class="page-subtitle">Find exactly what you're looking for.</p>
+    </div>
 
-    <br>
-    <ul>
+    <div class="cat-grid">
         {% for key, name in categories %}
-            <li><a href="{% url 'category_listings' key %}">{{ name }}</a></li>
+            <a href="{% url 'category_listings' key %}" class="cat-card">{{ name }}</a>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}

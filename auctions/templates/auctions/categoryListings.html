@@ -1,35 +1,35 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Listings in "{{ category|title }}"</h2>
-    <hr>
+    <div class="page-header">
+        <h1 class="page-heading page-heading--lg"><em>{{ category|title }}</em></h1>
+        <p class="page-subtitle">Listings in this category.</p>
+    </div>
 
     {% if listings %}
-        <ul style="list-style: none; padding-left: 0;">
+        <div class="listings-grid">
             {% for listing in listings %}
-                <li style="display: flex; align-items: flex-start; margin-bottom: 20px;">
-                    <!-- Image -->
-                    <div style="margin-right: 20px;">
+                <a href="{% url 'listing_detail' listing.id %}" class="listing-card">
+                    <div class="listing-card__img-wrap">
                         {% if listing.image %}
-                            <img src="{{ listing.image }}" width="150">
+                            <img class="listing-card__img" src="{{ listing.image }}" alt="{{ listing.title }}">
                         {% else %}
-                            <p>No Image</p>
+                            <div class="listing-card__no-img">No Image</div>
                         {% endif %}
                     </div>
-
-                    <!-- Info -->
-                    <div>
-                        <h4><a href="{% url 'listing_detail' listing.id %}">{{ listing.title }}</a></h4>
-                        <p><strong>Price:</strong> ${{ listing.price }}</p>
-                        <p>{{ listing.description }}</p>
-                        <p><strong>Owner:</strong> {{ listing.owner.username }}</p>
-                        <small style="color: gray;">Created {{ listing.dateTime }}</small>
+                    <div class="listing-card__body">
+                        <div class="listing-card__cat">{{ listing.category }}</div>
+                        <h3 class="listing-card__title">{{ listing.title }}</h3>
+                        <p class="listing-card__desc">{{ listing.description }}</p>
+                        <div class="listing-card__foot">
+                            <span class="listing-card__price">${{ listing.price }}</span>
+                            <span class="listing-card__meta">{{ listing.owner.username }}<br>{{ listing.dateTime|date:"M j, Y" }}</span>
+                        </div>
                     </div>
-                </li>
-                <hr>
+                </a>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
-        <p>No active listings in this category.</p>
+        <div class="empty"><p>No active listings in this category.</p></div>
     {% endif %}
 {% endblock %}
